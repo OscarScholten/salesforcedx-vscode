@@ -2,6 +2,9 @@
   "name": "salesforcedx-vscode",
   "repository": "forcedotcom/salesforcedx-vscode",
   "license": "BSD-3-Clause",
+  "workspaces": [
+    "./packages/*"
+  ],
   "engines": {
     "node": ">=16.13.0"
   },
@@ -42,8 +45,8 @@
     "webpack-cli": "3.3.12"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap --no-ci -- --no-package-lock && node scripts/reformat-with-prettier && npm run check:peer-deps",
-    "bootstrap": "lerna bootstrap --no-ci -- --no-package-lock && node scripts/reformat-with-prettier",
+    "postinstall": "node scripts/reformat-with-prettier && npm run check:peer-deps",
+    "bootstrap": "npm install && node scripts/reformat-with-prettier",
     "circleci:artifacts": "node scripts/download-vsix-from-circleci.js",
     "commit-init": "commitizen init cz-conventional-changelog --save-dev --save-exact --force",
     "commit": "git-cz",
@@ -68,7 +71,7 @@
     "check:links": "find . -name \\*.md -not -path '*/node_modules/*' -print0 | xargs -0 -n1 npx markdown-link-check --quiet --alive 200,206,429",
     "check:deps": "lerna exec --no-bail --stream depcheck",
     "check:peer-deps": "check-peer-dependencies",
-    "vscode:package": "lerna exec --scope @salesforce/salesforcedx-* -- npm prune --production && lerna run vscode:package --concurrency 1 && node scripts/reformat-with-prettier",
+    "vscode:package": "npm run vscode:package --workspaces --if-present && node scripts/reformat-with-prettier",
     "vscode:sha256": "lerna run vscode:sha256 --concurrency 1",
     "vscode:publish": "lerna run vscode:publish --concurrency 1",
     "watch": "lerna run --parallel watch",
